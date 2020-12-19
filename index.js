@@ -1,4 +1,5 @@
 const express = require('express')
+const fetch = require('node-fetch')
 const app = express()
 const path = require('path')
 
@@ -6,7 +7,18 @@ app.set('view wngine', 'ejs')
 app.set('views', path.join(__dirname, '/views'))
 
 app.get('/', (req, res) => {
-    res.render('home.ejs')
+    const hello = async () => {
+        const responce = await fetch('https://type.fit/api/quotes')
+        const data = await responce.json()
+        const quoteData = {
+            text: data[5].text,
+            author: data[5].author,
+        }
+        return quoteData
+    }
+
+    hello().then((quote) => console.log(quote.text, quote.author))
+    // res.render('home.ejs')
 })
 
 app.get('/rand', (req, res) => {
