@@ -7,7 +7,19 @@ app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/views'))
 
 app.get('/', (req, res) => {
-    res.render('home.ejs')
+    const hello = async () => {
+        const responce = await fetch('https://type.fit/api/quotes')
+        const data = await responce.json()
+        const quoteData = {
+            text: data[5].text,
+            author: data[5].author,
+        }
+        return quoteData
+    }
+
+    let quoteNew = hello().then((quote) => {
+        res.render('home.ejs', { quote })
+    })
 })
 
 app.get('/cats', (req, res) => {
@@ -35,15 +47,3 @@ app.get('/rand', (req, res) => {
 app.listen(3000, () => {
     console.log('Listening on port 3k')
 })
-
-// const hello = async () => {
-//     const responce = await fetch('https://type.fit/api/quotes')
-//     const data = await responce.json()
-//     const quoteData = {
-//         text: data[5].text,
-//         author: data[5].author,
-//     }
-//     return quoteData
-// }
-
-// hello().then((quote) => console.log(quote.text, quote.author))
